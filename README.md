@@ -1,6 +1,6 @@
-# 作業機器人/Homework Bot
-一個可以幫你記下作業並提醒你完成作業且功能強大的Discord機器人
-A powerful Discord Bot that can help you to note your homework and remind you to complete it.
+# **作業機器人/Homework Bot** ✨
+✨一個可以幫你記下作業並提醒你完成作業且功能強大的Discord機器人✨
+✨A powerful Discord Bot that can help you to note your homework and remind you to complete it.✨
 
 ## 連結/Links
 [![Discord Server](https://img.shields.io/badge/Discord%20Server-Join-brightgreen)](https://discord.gg/5UrGWXf3ba)
