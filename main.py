@@ -10,6 +10,9 @@ from datetime import datetime,  timedelta
 intents = discord.Intents().all()
 bot = discord.Bot(intents=intents)
 
+with open('settings.json', 'r', encoding='utf-8') as settings:
+    setting = json.load(settings)
+
 def open_json():
     with open('hw.json', 'r', encoding='utf-8') as homeworks:
         homework = json.load(homeworks)
@@ -339,4 +342,4 @@ async def 作業列表(ctx, 時間=None, 科目=None, 作業種類=None, 名稱=
 
 if __name__ == '__main__':
     keep_alive.keep_alive()
-    bot.run('MTE0ODYyNDYyNjQwMjk4ODA2Mw.GB_SoK.FHx_F7hIrNSx7CRo9ANlIv-KwoDr6IeuNP0mTc')
+    bot.run(setting['token'])
