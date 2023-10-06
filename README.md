@@ -3,9 +3,11 @@
 ✨A powerful Discord Bot that can help you to note your homework and remind you to complete it.✨
 
 ## 連結/Links
+[![Invite](https://img.shields.io/badge/Invite-Bot-blue)](https://www.google.com/)
 [![Discord Server](https://img.shields.io/badge/Discord%20Server-Join-brightgreen)](https://discord.gg/5UrGWXf3ba)
 [![YouTube Channel](https://img.shields.io/badge/YouTube-Subscribe-red)](https://www.youtube.com/@JimmyXiaoXi)
 
+- **邀請機器人** 👉 (https://www.google.com/)
 - **加入Discord伺服器** 👉 (https://discord.gg/5UrGWXf3ba)
 - **訂閱我👉** (https://www.youtube.com/@JimmyXiaoXi)
 
