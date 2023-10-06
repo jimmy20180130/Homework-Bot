@@ -4,3 +4,4 @@ private/README.md
 private/settings.json
 private/keep_alive.py
 private/main.py
+__pycache__
