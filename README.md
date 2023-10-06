@@ -9,7 +9,7 @@ A powerful Discord Bot that can help you to note your homework and remind you to
 - **加入Discord伺服器** 👉 (https://discord.gg/5UrGWXf3ba)
 - **訂閱我👉** (https://www.youtube.com/@JimmyXiaoXi)
 
-## 特色/功能
+## 特色和功能/Features
 - ✅ 可以記下各科的作業
 - ✅ 在 Discord 就可以輕鬆看到你今天獲知後要完成的作業
 - ✅ 可選擇作業類型
@@ -18,7 +18,7 @@ A powerful Discord Bot that can help you to note your homework and remind you to
 - ⚠️ 定時私訊使用者作業
 - ⚠️ 顯示作業完成/遲交等狀態
 
-## 指令列表
+## 指令列表/Command List
 - 被()括起來表示只能從選項中選一個
 - 被<>括起來表示需替換為實際值
 - 被[]括起來表示為選填
@@ -31,11 +31,11 @@ A powerful Discord Bot that can help you to note your homework and remind you to
 
 # **不想用我的機器人? 想自己架?**
 
-## 需求
+## 需求/Requirements
 - Python 3.11 或更高之版本
 - py-cord 2.4.1
 
-## 操作方式(在自己電腦上跑)
+## 操作方式(在自己電腦上跑)/Host on your own machine
 - 請參考影片或是底下內容
 1. 點右上角的 Download 按鈕，把檔案下載到您的電腦上並解壓縮
 2. 輸入以下指令或是在你存放檔案資料夾裡面點右鍵 -> 在終端機中開啟
@@ -47,5 +47,5 @@ A powerful Discord Bot that can help you to note your homework and remind you to
 4. 接著使用底下的指令來執行
    ```bash
    python main.py
-## 操作方式(在repl.it上跑)
+## 操作方式(在repl.it上跑)/Host on Replit
 - [請看此影片](https://www.google.com)
