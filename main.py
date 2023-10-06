@@ -2,7 +2,6 @@ import json
 import discord
 from discord import option, SlashCommandOptionType
 import keep_alive
-import os
 import datetime
 import pytz
 from datetime import datetime,  timedelta
