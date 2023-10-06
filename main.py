@@ -72,7 +72,7 @@ async def on_ready():
 @option("附件1", description="檔案附件(建議放圖片)", type=SlashCommandOptionType.attachment)
 @option("附件2", description="檔案附件", type=SlashCommandOptionType.attachment)
 @option("附件3", description="檔案附件", type=SlashCommandOptionType.attachment)
-async def 添加作業(ctx, 科目, 作業類型, 作業名稱, 作業說明, 排定時間=None, 附件1=None, 附件2=None, 附件3=None):
+async def 添加作業(ctx, 科目, 作業類型, 作業名稱, 作業說明=None, 排定時間=None, 附件1=None, 附件2=None, 附件3=None):
     await ctx.defer()
     if 附件1:
         attachment1_url = 附件1.url
@@ -93,14 +93,17 @@ async def 添加作業(ctx, 科目, 作業類型, 作業名稱, 作業說明, �
     formatted_dates = [one_day_before - timedelta(days=i) for i in range(4)]  # 前四天的日期s
     
     homework = open_json()
-    
+    user_id = str(ctx.author.id)
+    if user_id not in homework:
+        homework.setdefault(user_id, {})
+        
     try:
         for formatted_date in formatted_dates:
-            homework.setdefault(formatted_date, {})
-            homework[formatted_date].setdefault(科目, {})
-            homework[formatted_date][科目].setdefault(作業類型, {})
+            homework[user_id].setdefault(formatted_date, {})
+            homework[user_id][formatted_date].setdefault(科目, {})
+            homework[user_id][formatted_date][科目].setdefault(作業類型, {})
             if 附件1 is not None and 附件2 is not None and 附件3 is not None:
-                homework[formatted_date][科目][作業類型].update({作業名稱: {
+                homework[user_id][formatted_date][科目][作業類型].update({作業名稱: {
                     "description": 作業說明,
                     "uploader": ctx.author.id,
                     "attachment1": attachment1_url,
@@ -108,7 +111,7 @@ async def 添加作業(ctx, 科目, 作業類型, 作業名稱, 作業說明, �
                     "attachment3": attachment3_url
                 }})
             elif 附件1 is not None and 附件2 is not None and 附件3 is None:
-                homework[formatted_date][科目][作業類型].update({作業名稱: {
+                homework[user_id][formatted_date][科目][作業類型].update({作業名稱: {
                     "description": 作業說明,
                     "uploader": ctx.author.id,
                     "attachment1": attachment1_url,
@@ -116,7 +119,7 @@ async def 添加作業(ctx, 科目, 作業類型, 作業名稱, 作業說明, �
                     "attachment3": '無'
                 }})
             elif 附件1 is not None and 附件2 is None and 附件3 is None:
-                homework[formatted_date][科目][作業類型].update({作業名稱: {
+                homework[user_id][formatted_date][科目][作業類型].update({作業名稱: {
                     "description": 作業說明,
                     "uploader": ctx.author.id,
                     "attachment1": attachment1_url,
@@ -127,7 +130,7 @@ async def 添加作業(ctx, 科目, 作業類型, 作業名稱, 作業說明, �
                 await ctx.respond('請確認參數是否正確')
                 pass
             else:
-                homework[formatted_date][科目][作業類型].update({作業名稱: {
+                homework[user_id][formatted_date][科目][作業類型].update({作業名稱: {
                     "description": 作業說明,
                     "uploader": ctx.author.id,
                     "attachment1": '無',
@@ -151,15 +154,16 @@ async def 添加作業(ctx, 科目, 作業類型, 作業名稱, 作業說明, �
 @option("名稱", description="作業名稱", autocomplete=hw_name)
 async def 移除作業(ctx, 時間, 科目=None, 作業種類=None, 名稱=None):
     homework = open_json()
+    user_id = str(ctx.author.id)
     try:
         if 科目 is None and 作業種類 is None and 名稱 is None:
-            del homework[時間]
+            del homework[user_id][時間]
         elif  科目 is not None and 作業種類 is None and 名稱 is None:
-            del homework[時間][科目]
+            del homework[user_id][時間][科目]
         elif  科目 is not None and 作業種類 is not None and 名稱 is None:
-            del homework[時間][科目][作業種類]
+            del homework[user_id][時間][科目][作業種類]
         elif 科目 is not None and 作業種類 is not None and 名稱 is not None:
-            del homework[時間][科目][作業種類][名稱]
+            del homework[user_id][時間][科目][作業種類][名稱]
         elif (科目 is None and 作業種類 is not None and 名稱 is not None) or (作業種類 is None and 名稱 is not None):
             await ctx.respond('請確認參數是否正確')
             pass
@@ -180,10 +184,11 @@ async def 移除作業(ctx, 時間, 科目=None, 作業種類=None, 名稱=None)
 @option("名稱", description="作業名稱", autocomplete=hw_name)
 async def 作業列表(ctx, 時間=None, 科目=None, 作業種類=None, 名稱=None):
     homework = open_json()
+    user_id = str(ctx.author.id)
     if not (時間 is None and (科目 is not None or 作業種類 is not None or 名稱 is not None)) or (時間 is not None and 科目 is None and 作業種類 is not None):
         if not 時間:
             # 如果未提供時間參數，顯示所有天數的所有作業
-            for date, subjects in homework.items():
+            for date, subjects in homework[user_id].items():
                 taipei_timezone = pytz.timezone('Asia/Taipei')
                 current_date = datetime.now(taipei_timezone).date()
                 provided_date = datetime.strptime(date, '%Y/%m/%d').date()
@@ -214,11 +219,11 @@ async def 作業列表(ctx, 時間=None, 科目=None, 作業種類=None, 名稱=
                                                         value=f"說明: {hw_info['description']}\n上傳者: <@{hw_info['uploader']}>",
                                                         inline=False)
                     await ctx.respond(embed=embed)
-        elif 時間 in homework:
+        elif 時間 in homework[user_id]:
             if not 科目:
                 # 如果只提供時間參數，但未提供科目，顯示當天的所有作業
                 embed = discord.Embed(title=f"作業列表 - {時間}", color=discord.Color.blue())
-                subjects = homework[時間]
+                subjects = homework[user_id][時間]
                 for subject, types in subjects.items():
                     for hw_type, hw_data in types.items():
                         for hw_name, hw_info in hw_data.items():
@@ -244,11 +249,11 @@ async def 作業列表(ctx, 時間=None, 科目=None, 作業種類=None, 名稱=
                                                     value=f"說明: {hw_info['description']}\n上傳者: <@{hw_info['uploader']}>",
                                                     inline=False)
                 await ctx.respond(embed=embed)
-            elif 科目 in homework[時間]:
+            elif 科目 in homework[user_id][時間]:
                 if not 作業種類:
                     # 如果提供時間和科目參數，但未提供作業類型，顯示當天特定科目的所有作業
                     embed = discord.Embed(title=f"作業列表 - {時間} - {科目}", color=discord.Color.blue())
-                    types = homework[時間][科目]
+                    types = homework[user_id][時間][科目]
                     for hw_type, hw_data in types.items():
                         for hw_name, hw_info in hw_data.items():
                             if hw_info['attachment1'].endswith('.png') or hw_info['attachment1'].endswith('.jpg') or hw_info['attachment1'].endswith('.jpeg') or hw_info['attachment1'].endswith('.gif') or hw_info['attachment1'].endswith('.bmp'):
@@ -273,11 +278,11 @@ async def 作業列表(ctx, 時間=None, 科目=None, 作業種類=None, 名稱=
                                                     value=f"說明: {hw_info['description']}\n上傳者: <@{hw_info['uploader']}>",
                                                     inline=False)
                     await ctx.respond(embed=embed)
-                elif 作業種類 in homework[時間][科目]:
+                elif 作業種類 in homework[user_id][時間][科目]:
                     if not 名稱:
                         # 如果提供時間、科目和作業類型，但未提供作業名稱，顯示當天特定科目和作業類型的所有作業
                         embed = discord.Embed(title=f"作業列表 - {時間} - {科目} - {作業種類}", color=discord.Color.blue())
-                        hw_data = homework[時間][科目][作業種類]
+                        hw_data = homework[user_id][時間][科目][作業種類]
                         for hw_name, hw_info in hw_data.items():
                             if hw_info['attachment1'].endswith('.png') or hw_info['attachment1'].endswith('.jpg') or hw_info['attachment1'].endswith('.jpeg') or hw_info['attachment1'].endswith('.gif') or hw_info['attachment1'].endswith('.bmp'):
                                 embed.set_image(url=hw_info['attachment1'])
@@ -301,9 +306,9 @@ async def 作業列表(ctx, 時間=None, 科目=None, 作業種類=None, 名稱=
                                                     value=f"說明: {hw_info['description']}\n上傳者: <@{hw_info['uploader']}>",
                                                     inline=False)
                         await ctx.respond(embed=embed)
-                    elif 名稱 in homework[時間][科目][作業種類]:
+                    elif 名稱 in homework[user_id][時間][科目][作業種類]:
                         # 如果提供時間、科目、作業類型和作業名稱，顯示特定作業的詳細信息
-                        hw_info = homework[時間][科目][作業種類][名稱]
+                        hw_info = homework[user_id][時間][科目][作業種類][名稱]
                         embed = discord.Embed(title=f"作業詳細信息 - {時間} - {科目} - {作業種類} - {名稱}",
                                             color=discord.Color.blue())
                         if hw_info['attachment1'].endswith('.png') or hw_info['attachment1'].endswith('.jpg') or hw_info['attachment1'].endswith('.jpeg') or hw_info['attachment1'].endswith('.gif') or hw_info['attachment1'].endswith('.bmp'):
